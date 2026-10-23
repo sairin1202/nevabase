@@ -1,0 +1,10 @@
+[Unit]
+Description=nevabase coffee daily job (06:30 Beijing, after the ICE close)
+
+[Timer]
+OnCalendar=Tue..Sat 22:30 UTC
+Persistent=true
+Unit=nevabase-daily@coffee.service
+
+[Install]
+WantedBy=timers.target

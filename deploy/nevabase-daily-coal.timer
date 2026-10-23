@@ -1,0 +1,10 @@
+[Unit]
+Description=nevabase coal daily job (16:30 Beijing)
+
+[Timer]
+OnCalendar=Mon..Fri 08:30 UTC
+Persistent=true
+Unit=nevabase-daily@coal.service
+
+[Install]
+WantedBy=timers.target

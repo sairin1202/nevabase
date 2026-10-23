@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NAME}} · nevabase</title>
+<meta name="description" content="{{TAGLINE}}">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/market.css">
+</head>
+<body class="market-page">
+<nav class="nav" id="nav"></nav>
+<script>window.MARKET = {{BOOT}};</script>
+
+<header class="mk-head">
+  <div class="wrap">
+    <div class="mk-title">
+      <div>
+        <span class="label heat" id="mkKicker"></span>
+        <h1 id="mkName"></h1>
+        <p class="lead" id="mkTagline"></p>
+      </div>
+      <div class="mk-meta" id="mkMeta"></div>
+    </div>
+    <div class="mk-strip" id="mkStrip"></div>
+    <div class="mk-tabs" role="tablist" id="mkTabs"></div>
+  </div>
+</header>
+
+<main class="wrap mk-main">
+  <section data-tab="graph" hidden></section>
+  <section data-tab="review" hidden></section>
+  <section data-tab="backtest" hidden></section>
+  <section data-tab="paper" hidden></section>
+  <section data-tab="data" hidden></section>
+</main>
+
+<footer id="footer"></footer>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/charts.js"></script>
+<script src="/static/js/market.js"></script>
+</body>
+</html>

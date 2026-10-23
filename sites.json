@@ -1,0 +1,5 @@
+[
+  { "key": "hub", "kind": "hub", "zh": "主页", "en": "Homepage", "path": "/", "port": 8000 },
+  { "key": "coal", "kind": "market", "zh": "煤炭", "en": "Coal", "path": "/coal", "port": 8021, "group": "期货" },
+  { "key": "coffee", "kind": "market", "zh": "咖啡", "en": "Coffee", "path": "/coffee", "port": 8022, "group": "期货" }
+]

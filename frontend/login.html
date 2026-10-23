@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — nevabase</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/market.css">
+<link rel="privacy-policy" href="/privacy">
+<link rel="terms-of-service" href="/terms">
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+<div class="login-wrap">
+  <div class="login-card">
+    <h1 id="title">Sign in to nevabase</h1>
+    <p class="muted" id="subtitle" style="margin:0"></p>
+
+    <div class="stack">
+      <button class="btn wide oauth" id="google">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.8 38 46.5 31.8 46.5 24.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.6-2 15.4-5.6l-7.5-5.8c-2.1 1.4-4.8 2.3-7.9 2.3-6.3 0-11.7-4.1-13.6-9.8l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <button class="btn wide oauth" id="github">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Continue with GitHub
+      </button>
+    </div>
+
+    <div class="or">or with email</div>
+    <form class="stack" id="form" style="margin-top:8px" novalidate>
+      <input class="input" id="name" placeholder="Your name" autocomplete="name" style="display:none">
+      <input class="input" id="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+      <input class="input" id="password" type="password" placeholder="Password" autocomplete="current-password" required minlength="6">
+      <button class="btn primary wide" id="submit" type="submit">Sign in</button>
+    </form>
+    <div class="login-msg" id="msg"></div>
+    <div class="login-links">
+      <a id="toggle">Create an account</a>
+      <a id="forgot">Forgot password?</a>
+    </div>
+    <p class="login-legal">By continuing you agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
+  </div>
+</div>
+<footer id="footer"></footer>
+<script src="/static/js/app.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const home = "/";
+const t = Neva.t;
+$("subtitle").innerHTML = t("登录后可以开模拟盘账户：自己下单，或交给逻辑包每天收盘后自动调仓。Google 登录只会提供你的名字、邮箱和头像。<a href=\"/\">了解 nevabase</a>。", "Sign in to open paper-trading accounts: trade yourself, or let the logic pack rebalance after each close. Google sign-in shares only your name, email and profile picture. <a href=\"/\">Learn more about nevabase</a>.");
+$("google").lastChild.textContent = " " + t("用 Google 继续", "Continue with Google");
+$("github").lastChild.textContent = " " + t("用 GitHub 继续", "Continue with GitHub");
+document.querySelector(".or").textContent = t("或用邮箱", "or with email");
+$("forgot").textContent = t("忘记密码？", "Forgot password?");
+$("name").placeholder = t("你的名字", "Your name"); $("password").placeholder = t("密码", "Password");
+document.querySelector(".login-legal").innerHTML = t("继续即表示你同意<a href=\"/terms\">服务条款</a>和<a href=\"/privacy\">隐私政策</a>。", "By continuing you agree to the <a href=\"/terms\">Terms of Service</a> and <a href=\"/privacy\">Privacy Policy</a>.");
+const next = (() => { const n = params.get("next"); return n && n.startsWith("/") && !n.startsWith("//") ? n : home; })();
+let mode = params.get("mode") === "signup" ? "signup" : "signin";
+
+function setMode(m) {
+  mode = m;
+  const up = m === "signup";
+  $("title").textContent = up ? t("注册 nevabase", "Create your nevabase account") : t("登录 nevabase", "Sign in to nevabase");
+  $("submit").textContent = up ? t("注册", "Create account") : t("登录", "Sign in");
+  $("toggle").textContent = up ? t("已有账号？登录", "Already have an account? Sign in") : t("注册新账号", "Create an account");
+  $("name").style.display = up ? "" : "none";
+  $("password").autocomplete = up ? "new-password" : "current-password";
+  msg("");
+}
+function msg(text, cls = "") { $("msg").textContent = text; $("msg").className = "login-msg " + cls; }
+function busy(b) { document.querySelectorAll(".login-card button").forEach(x => x.disabled = b); }
+
+async function finish() {
+  try { await NevaAuth.me(); } catch (e) { msg("Signed in, but the server rejected the session: " + e.message, "err"); busy(false); return; }
+  location.replace(next);
+}
+async function run(fn) {
+  busy(true); msg(t("登录中…", "Signing in…"));
+  try {
+    const r = await fn();
+    if (r?.redirecting) { msg("Taking you to the sign-in page…"); return; }  // page is navigating away
+    await finish();
+  } catch (e) { msg(e.message, "err"); busy(false); }
+}
+
+$("google").onclick = () => run(() => NevaAuth.signInWithGoogle());
+$("github").onclick = () => run(() => NevaAuth.signInWithGithub());
+$("form").onsubmit = e => {
+  e.preventDefault();
+  const email = $("email").value.trim(), pw = $("password").value;
+  if (!email || !pw) return msg("Email and password are required.", "err");
+  run(() => mode === "signup" ? NevaAuth.createAccount(email, pw, $("name").value.trim()) : NevaAuth.signInWithEmail(email, pw));
+};
+$("toggle").onclick = () => setMode(mode === "signup" ? "signin" : "signup");
+$("forgot").onclick = async () => {
+  const email = $("email").value.trim();
+  if (!email) return msg("Enter your email above first.", "err");
+  try { await NevaAuth.resetPassword(email); msg("Password reset email sent.", "ok"); } catch (e) { msg(e.message, "err"); }
+};
+
+// app.js injects the auth module; wait for it, then bounce if already signed in.
+(async function () {
+  busy(true);
+  while (!window.NevaAuth) await new Promise(r => setTimeout(r, 30));
+  setMode(mode);
+  msg(t("检查登录状态…", "Checking sign-in…"));
+  const u = await NevaAuth.ready;
+  if (u) return finish();
+  msg("");
+  if (!NevaAuth.enabled) msg("Login is not configured on this server (missing Firebase service account).", "err");
+  if (NevaAuth.state.error) msg(NevaAuth.state.error, "err");
+  busy(false);
+})();
+</script>
+</body>
+</html>

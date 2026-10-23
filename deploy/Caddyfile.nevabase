@@ -1,0 +1,23 @@
+nevabase.com {
+	encode zstd gzip
+	# Firebase Auth helper on our own domain (used if NEVA_FIREBASE_AUTH_DOMAIN=nevabase.com)
+	handle /__/auth/* {
+		reverse_proxy https://nevabase-eca52.firebaseapp.com {
+			header_up Host nevabase-eca52.firebaseapp.com
+		}
+	}
+	# one service per market (sites.json)
+	@coal path /coal /coal/*
+	handle @coal {
+		reverse_proxy 127.0.0.1:8021
+	}
+	@coffee path /coffee /coffee/*
+	handle @coffee {
+		reverse_proxy 127.0.0.1:8022
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8000 {
+			flush_interval -1
+		}
+	}
+}

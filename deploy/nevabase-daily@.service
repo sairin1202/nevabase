@@ -1,0 +1,13 @@
+# The offline phase of one market: sync, weekly LLM generation + regression gate, review summary, agent accounts.
+[Unit]
+Description=nevabase daily generation for %i
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/project/nevabase
+Environment=PYTHONPATH=/home/ubuntu/project/nevabase/core
+Environment=NEVA_SYNC=0
+EnvironmentFile=/home/ubuntu/project/nevabase/.env
+ExecStart=/home/ubuntu/project/nevabase/.venv/bin/python -m nevacore.cli daily %i
+TimeoutStartSec=3600

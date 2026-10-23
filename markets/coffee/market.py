@@ -1,0 +1,78 @@
+"""咖啡 · ICE 阿拉比卡: Brazilian weather and the real drive most of it; sugar and cocoa share the soft-commodity flows."""
+from nevacore.spec import Instrument, Node, Relation, Series, define_market, momentum
+
+ICE = dict(exchange="ICE US", currency="USD", fee_rate=0.00005,
+           note="外盘连续合约，换月跳空没有复权，回测收益会带上换月的价差。",
+           note_en="Continuous foreign contract; roll gaps are not adjusted, so backtests include roll jumps.")
+SUL_DE_MINAS = dict(lat=-21.55, lon=-45.43)      # Varginha, the largest arabica belt
+CENTRAL_HIGHLANDS = dict(lat=12.67, lon=108.04)  # Buon Ma Thuot, Dak Lak: Vietnam's robusta heartland
+
+MARKET = define_market(
+    key="coffee",
+    name="咖啡",
+    name_en="Coffee",
+    tagline="ICE 阿拉比卡咖啡：巴西产区天气、雷亚尔汇率，以及原糖、可可的联动",
+    tagline_en="ICE arabica: Brazilian growing-belt weather, the real, and links to sugar and cocoa",
+    currency="USD",
+    start="2010-01-04",
+    main="KC",
+    instruments=[
+        Instrument("KC", "阿拉比卡咖啡", "Arabica coffee", unit="¢/磅", multiplier=375, margin=0.10, tick=0.05,
+                   source={"kind": "foreign_future", "symbol": "KC", "yahoo": "KC=F"}, quote="hf_KC", **ICE),
+        Instrument("RS", "原糖", "Raw sugar", unit="¢/磅", multiplier=1120, margin=0.10, tick=0.01,
+                   source={"kind": "foreign_future", "symbol": "RS", "yahoo": "SB=F"}, quote="hf_RS", **ICE),
+        Instrument("CC", "可可", "Cocoa", unit="美元/吨", multiplier=10, margin=0.15, tick=1,
+                   source={"kind": "foreign_future", "symbol": "CC", "yahoo": "CC=F"}, quote="hf_CC", **ICE),
+    ],
+    series=[
+        Series("USDBRL", "美元/雷亚尔", "USD/BRL", "BRL", "汇率", "FX",
+               source={"kind": "fx", "base": "USD", "quote": "BRL", "since": "2008-01-01"}, calendar="day"),
+        Series("minas_tmin", "南米纳斯最低气温", "Sul de Minas min temp", "°C", "天气", "Weather",
+               source={"kind": "weather", "var": "temperature_2m_min", "since": "2005-01-01", **SUL_DE_MINAS}, calendar="day"),
+        Series("minas_rain", "南米纳斯降水", "Sul de Minas rainfall", "mm", "天气", "Weather",
+               source={"kind": "weather", "var": "precipitation_sum", "since": "2005-01-01", **SUL_DE_MINAS}, calendar="day"),
+        Series("vn_rain", "越南中部高原降水", "Central Highlands rainfall", "mm", "天气", "Weather",
+               source={"kind": "weather", "var": "precipitation_sum", "since": "2005-01-01", **CENTRAL_HIGHLANDS}, calendar="day"),
+    ],
+    relations=[
+        Relation("brl_to_kc", "USDBRL", "KC", "pct", window=5, lag=1, horizon=5, sign=-1,
+                 name="雷亚尔贬值 → 咖啡承压", name_en="Weaker real → coffee under pressure",
+                 why="USD/BRL 上升时，巴西农户卖一袋咖啡换到的雷亚尔变多，更愿意出货，美元计价的咖啡被压低。",
+                 why_en="A higher USD/BRL raises growers' local-currency revenue per bag, so they sell more."),
+        Relation("frost_to_kc", "minas_tmin", "KC", "count_below", window=7, threshold=4, lag=1, horizon=10, sign=1,
+                 months=[5, 6, 7, 8, 9],
+                 name="南米纳斯霜冻 → 咖啡上涨", name_en="Sul de Minas frost → coffee up",
+                 why="5–9 月南半球冬季，2 米气温跌到 4°C 以下时地表可能结霜，会冻伤咖啡树、减少来年产量。",
+                 why_en="In the austral winter (May–Sep) 2 m minimums under 4°C mean ground frost is likely, damaging next year's crop."),
+        Relation("flowering_dry_to_kc", "minas_rain", "KC", "anomaly", window=30, lag=1, horizon=20, sign=-1,
+                 months=[9, 10, 11],
+                 name="开花期少雨 → 咖啡上涨", name_en="Dry flowering season → coffee up",
+                 why="9–11 月是巴西咖啡开花期，降雨比往年同期少会影响开花坐果，市场会提前炒作减产。",
+                 why_en="Sep–Nov is flowering; rainfall below normal threatens fruit set and the next crop."),
+        Relation("vn_dry_to_kc", "vn_rain", "KC", "anomaly", window=30, lag=1, horizon=20, sign=-1,
+                 months=[1, 2, 3, 4],
+                 name="越南旱季缺雨 → 咖啡上涨", name_en="Dry Vietnam season → coffee up",
+                 why="1–4 月越南中部高原旱季需要灌溉，雨水偏少会威胁罗布斯塔产量，替代需求转向阿拉比卡。",
+                 why_en="Jan–Apr is Vietnam's dry season; a drier one threatens robusta and shifts demand to arabica."),
+        Relation("sugar_to_kc", "RS", "KC", "pct", window=10, lag=0, horizon=5, sign=1,
+                 name="原糖涨 → 咖啡跟涨", name_en="Sugar up → coffee follows",
+                 why="原糖和咖啡都以巴西为最大产地，同受雷亚尔和巴西天气影响，软商品常同向波动。",
+                 why_en="Sugar and coffee share Brazil, the real and its weather, so softs often move together."),
+        Relation("cocoa_to_kc", "CC", "KC", "pct", window=10, lag=0, horizon=5, sign=1,
+                 name="可可涨 → 咖啡跟涨", name_en="Cocoa up → coffee follows",
+                 why="基金常把可可、咖啡、原糖当作一个软商品篮子同向配置。",
+                 why_en="Funds often trade cocoa, coffee and sugar together as a softs basket."),
+        Relation("brl_to_rs", "USDBRL", "RS", "pct", window=5, lag=1, horizon=5, sign=-1,
+                 name="雷亚尔贬值 → 原糖承压", name_en="Weaker real → sugar under pressure",
+                 why="和咖啡同理：雷亚尔贬值时巴西糖厂出口意愿更强。",
+                 why_en="As with coffee: a weaker real pushes Brazilian mills to export more sugar."),
+        # continuous contracts carry roll jumps, so these are noisier than the domestic ones
+        momentum("KC", "咖啡", "Coffee"), momentum("RS", "原糖", "Sugar"), momentum("CC", "可可", "Cocoa"),
+    ],
+    nodes=[
+        Node("minas_tmin", 0.08, 0.10, "产区"), Node("minas_rain", 0.08, 0.45, "产区"), Node("vn_rain", 0.08, 0.82, "产区"),
+        Node("USDBRL", 0.40, 0.10, "宏观"),
+        Node("KC", 0.66, 0.45, "期货"),
+        Node("RS", 0.92, 0.10, "期货"), Node("CC", 0.92, 0.82, "期货"),
+    ],
+)

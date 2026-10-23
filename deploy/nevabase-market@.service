@@ -1,0 +1,19 @@
+# One market per instance: systemctl enable --now nevabase-market@coal  (port from sites.json, path /coal)
+[Unit]
+Description=nevabase market %i (nevabase.com/%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/project/nevabase
+Environment=PYTHONUNBUFFERED=1
+Environment=HOST=127.0.0.1
+EnvironmentFile=/home/ubuntu/project/nevabase/.env
+ExecStart=/home/ubuntu/project/nevabase/run.sh %i
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
